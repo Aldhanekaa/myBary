@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     }
     try {
         const authors = await Author.find(searchOptions);
-        res.render('authors/index', { authors: authors, input: req.query });
+        res.render('authors/index', { authors: authors, input: req.query.name })
     } catch {
         res.redirect('/');
     }
