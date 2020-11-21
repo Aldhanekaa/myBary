@@ -10,7 +10,10 @@ router.get('/', async (req, res) => {
     }
     try {
         const authors = await Author.find(searchOptions);
-        res.render('authors/index', { authors: authors, input: req.query.name })
+
+        req.query.name = req.query.name.trim();
+
+        res.render('authors/index', { authors: authors, author: req.query })
     } catch {
         res.redirect('/');
     }
@@ -34,4 +37,4 @@ router.post('/', async (req, res) => {
     }
 })
 
-module.exports = router;
+module.exports = router; 
