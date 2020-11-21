@@ -11,10 +11,11 @@ router.get('/', async (req, res) => {
     try {
         const authors = await Author.find(searchOptions);
 
-        req.query.name = req.query.name.trim();
+        if (req.query.name != null) req.query.name = req.query.name.trim();
 
         res.render('authors/index', { authors: authors, author: req.query })
-    } catch {
+    } catch (err) {
+        console.log(err)
         res.redirect('/');
     }
 });
