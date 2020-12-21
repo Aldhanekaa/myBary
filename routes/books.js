@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const path = require('path'); // untuk joining string
+const fs = require('fs'); // fs untuk memanipulasi file di server
 const Book = require('../models/book');
 const uploadPath = path.join('public', Book.bookCoverImagePath);
 const Author = require('../models/author');
-const imageMimePath = ['image/jpeg', 'image/png']
+const imageMimePath = ['image/jpeg', 'image/png']; // supported file
 const upload = multer({
-    dest: uploadPath,
+    dest: uploadPath, // destinationnya
     fileFilter: (req, file, callback) => {
         callback(null, imageMimePath.includes(file.mimetype))
     }
@@ -18,7 +18,6 @@ router.get('/', async (req, res) => {
     let query = Book.find();
     if (req.query.title != null) {
         req.query.title = req.query.title.trim();
-
     }
     if (req.query.title != null && req.query.title != '') {
         query = query.regex('title', new RegExp(req.query.title, 'i'))
@@ -41,7 +40,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/new', async (req, res) => {
+router.get('/new', (req, res) => {
     // res.send('new book')
     renderNewPage(res, new Book())
 })
