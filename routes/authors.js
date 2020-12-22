@@ -26,6 +26,7 @@ router.get('/new', (req, res) => {
 
 // create author
 router.post('/', async (req, res) => {
+    console.log(req.body);
     const author = new Author({
         name: req.body.name.trim()
     });

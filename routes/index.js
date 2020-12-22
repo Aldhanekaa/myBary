@@ -6,6 +6,7 @@ router.get('/', async (req, res) => {
     let books;
     try {
         books = await Book.find().sort({ createdAt: 'desc' }).limit(10).exec();
+        console.log(books);
     } catch {
         books = []
     }
