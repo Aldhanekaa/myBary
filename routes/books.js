@@ -54,7 +54,6 @@ router.post('/', async (req, res) => {
         pageCount: req.body.pageCount,
         author: req.body.author
     });
-    console.log("REQ.BODY", req.body);
     saveCover(book, req.body.cover);
 
     try {
@@ -90,10 +89,8 @@ async function renderNewPage(res, book, hasError = false) {
 }
 
 function saveCover(book, coverEncoded) {
-    console.log("coverencoded lol", coverEncoded);
     if (coverEncoded == null) return;
     const cover = JSON.parse(coverEncoded);
-    console.log("COVER: " + cover);
     if (cover != null && imageMimePath.includes(cover.type)) {
         book.coverImage = new Buffer.from(cover.data, 'base64');
         book.coverImageType = cover.type;

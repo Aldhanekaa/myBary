@@ -1,6 +1,14 @@
-<h2>New Author</h2>
-<form action="/authors" method="POST">
-    <%- include('_form_fields') %>
-    <a href="/authors">Cancel</a>
-    <button type="submit">Create</button>
-</form>
+<% if (!status) { %>
+    <h2>New Author</h2>
+
+    <% }else { %>
+        <h2>Edit Author</h2>
+        <% } %>
+
+            <form method="POST" action="/authors/<%= status ? `${author.id}/?_method=PUT` : ''%>">
+                <%- include('_form_fields') %>
+                    <a href="/authors<%= status? `/${author.id}` : ''  %>">Cancel</a>
+                    <button type="submit">
+                        <%= status ? "Update" : "Create" %>
+                    </button>
+            </form>
