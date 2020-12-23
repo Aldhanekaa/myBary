@@ -55,11 +55,12 @@ router.post('/', async (req, res) => {
         pageCount: req.body.pageCount,
         author: req.body.author
     });
-
-    saveCover(book, req.body.cover);
-
-
     try {
+
+        console.log(req.body.cover.length);
+
+        saveCover(book, req.body.cover);
+
         const newBook = await book.save();
         res.redirect('books');
     } catch (err) {
