@@ -6,6 +6,7 @@ const router = express.Router();
 const Book = require('../models/book');
 // const uploadPath = path.join('public', Book.coverImageBasePath); // public/uploads/bookCovers
 const Author = require('../models/author');
+const { route } = require('./authors');
 const imageMimePath = ['image/jpeg', 'image/png']; // supported file
 // const upload = multer({
 //     dest: uploadPath, // destinationnya
@@ -54,7 +55,9 @@ router.post('/', async (req, res) => {
         pageCount: req.body.pageCount,
         author: req.body.author
     });
+
     saveCover(book, req.body.cover);
+
 
     try {
         const newBook = await book.save();
@@ -74,15 +77,85 @@ router.post('/', async (req, res) => {
 //     })
 // }
 
+router.get("/:id", async (req, res) => {
+    try {
+        const book = await Book.findById(req.params.id)
+            .populate("author")
+            .exec();
+        res.render("books/show", { book: book });
+    } catch (err) {
+        console.log(err);
+        res.redirect("/");
+    }
+});
+
+router.get("/:id/edit", async (req, res) => {
+    try {
+        const book = await Book.findById(req.params.id);
+        renderEditPage(res, book);
+    } catch (err) {
+        console.log(err);
+        res.redirect("/");
+    }
+});
+
+router.put("/:id", async (req, res) => {
+    let book = req.body;
+
+    if (book.cover != null && book.cover !== "") {
+        saveCover(book, book.cover);
+    } else {
+        console.log("HELLO!")
+        book.cover = new Buffer.from(book.lastFileBase64, 'base64');
+    }
+    delete book["lastFileBase64"];
+
+    // console.log("boook", book)
+
+    try {
+        await Book.findByIdAndUpdate(req.params.id, book);
+        res.redirect(`/books/${req.params.id}`)
+    } catch (err) {
+        console.log(err);
+        if (book != null) {
+            renderEditPage(res, book, true);
+        } else {
+            res.redirect("/books");
+        }
+    }
+});
+
+router.delete("/:id", async (req, res) => {
+    try {
+        await Book.findByIdAndRemove(req.params.id);
+        res.redirect("/books");
+
+    } catch (err) {
+        console.log(err);
+        res.redirect("/");
+    }
+});
+
+async function renderEditPage(res, book, hasError = false) {
+    renderFormPage(res, book, 'edit', hasError)
+}
+
 async function renderNewPage(res, book, hasError = false) {
+    renderFormPage(res, book, 'new', hasError)
+
+}
+
+async function renderFormPage(res, book, page, hasError = false) {
     try {
         const authors = await Author.find({});
         let params = {
             authors: authors,
-            book: book
+            book: book,
+            page: page
         }
+        // console.log(params)
         if (hasError) params.errorMessage = "error has occured";
-        res.render('books/new', params);
+        res.render(`books/newAndShow`, params);
     } catch {
         res.redirect('/books')
     }

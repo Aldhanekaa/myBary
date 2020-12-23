@@ -3,12 +3,14 @@
     <input type="text" name="title" value="<%= book.title %>">
 </div>
 
+<input type="hidden" name="lastFileBase64" value="<%=book.coverImage%>">
+
 <div>
     <label for="">Author</label>
-    <select name="author" id="">
+    <select name="author">
         <% authors.forEach(author=> {%>
 
-            <% if (book.author===author.id) {%>
+            <% if (book.author==author.id) {%>
                 <option selected label="<%= author.name %>" value="<%= author.id %>"></option>
 
                 <% } else { %>
@@ -23,8 +25,8 @@
 
 <div>
     <label for="">Publish Date</label>
-    <input type="date" name="publishDate" value="<%= book.publishDate ? book.publishDate.toISOString().split(" T")[0]
-        : '' %> ">
+    <input type="date" name="publishDate" value="<%= book.publishDate ? book.publishDate.toISOString().split('T')[0]
+        : '' %>">
 </div>
 
 <div>
